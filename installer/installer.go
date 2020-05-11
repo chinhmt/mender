@@ -29,6 +29,7 @@ import (
 
 type Rebooter interface {
 	Reboot() error
+	WaitForRebooting() error
 }
 
 type PayloadUpdatePerformer interface {

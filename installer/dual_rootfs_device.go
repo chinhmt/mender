@@ -104,6 +104,11 @@ func (d *dualRootfsDeviceImpl) Reboot() error {
 	return d.rebooter.Reboot()
 }
 
+func (d *dualRootfsDeviceImpl) WaitForRebooting() error {
+	log.Infof("Mender waiting for rebooting from active partition: %s", d.active)
+	return d.rebooter.WaitForRebooting()
+}
+
 func (d *dualRootfsDeviceImpl) RollbackReboot() error {
 	log.Infof("Mender rebooting from inactive partition: %s", d.active)
 	return d.rebooter.Reboot()

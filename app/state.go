@@ -980,6 +980,10 @@ func (is *updateInstallState) Handle(ctx *StateContext, c Controller) (State, bo
 		}
 	}
 
+	// log.Debugf("111111111111111111111111111111111")
+
+	// return nil, false
+
 	ok, state, cancelled := is.handleRebootType(ctx, c)
 	if !ok {
 		return state, cancelled
@@ -1542,6 +1546,7 @@ func (e *updateRebootState) Handle(ctx *StateContext, c Controller) (State, bool
 	}
 
 	log.Debug("handling reboot state")
+	log.Debug("111111111111111111111111111111111111111")
 
 	merr := c.ReportUpdateStatus(e.Update(), client.StatusRebooting)
 	if merr != nil && merr.IsFatal() {
@@ -1556,22 +1561,24 @@ func (e *updateRebootState) Handle(ctx *StateContext, c Controller) (State, bool
 		if err != nil {
 			return e.HandleError(ctx, c, NewTransientError(errors.Wrap(
 				err, "Unable to get requested reboot type")))
-		}
-		switch rebootRequested {
-		case datastore.RebootTypeCustom:
-			if err := i.Reboot(); err != nil {
-				log.Errorf("error rebooting device: %v", err)
-				return NewUpdateRollbackState(e.Update()), false
 			}
+			switch rebootRequested {
+			case datastore.RebootTypeCustom:
+				if err := i.Reboot(); err != nil {
+					log.Errorf("error rebooting device: %v", err)
+					return NewUpdateRollbackState(e.Update()), false
+				}
 
-		case datastore.RebootTypeAutomatic:
-			systemRebootRequested = true
+			case datastore.RebootTypeAutomatic:
+				systemRebootRequested = true
+			}
 		}
-	}
 
 	if systemRebootRequested {
+		log.Debug("222222222222222222222222222222222222222")
 		// Final system reboot after reboot scripts have run.
-		err := ctx.Rebooter.Reboot()
+		// err := ctx.Rebooter.Reboot()
+		err := ctx.Rebooter.WaitForRebooting()
 		// Should never return from Reboot().
 		return e.HandleError(ctx, c, NewTransientError(errors.Wrap(err, "Could not reboot host")))
 	}

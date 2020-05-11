@@ -45,6 +45,17 @@ func (s *SystemRebootCmd) Reboot() error {
 	return errors.New("System did not reboot, even though 'reboot' call succeeded.")
 }
 
+func (s *SystemRebootCmd) WaitForRebooting() error {
+	err := s.command.Command("/bin/systemctl", "stop", "mender").Run()
+	if err != nil {
+		return err
+	}
+
+	time.Sleep(10 * time.Minute)
+	return errors.New("System did not stop Mender, even though 'systemctl stop mender' call succeeded.")
+}
+
+
 type Commander interface {
 	Command(name string, arg ...string) *exec.Cmd
 }

@@ -33,6 +33,7 @@ import (
 
 type FakeDevice struct {
 	RetReboot      error
+	RetWaitForRebooting      error
 	RetStoreUpdate error
 	RetEnablePart  error
 	RetCommit      error
@@ -51,6 +52,10 @@ func (f FakeDevice) SupportsRollback() (bool, error) {
 
 func (f FakeDevice) Reboot() error {
 	return f.RetReboot
+}
+
+func (f FakeDevice) WaitForRebooting() error {
+	return f.RetWaitForRebooting
 }
 
 func (f FakeDevice) RollbackReboot() error {
